@@ -14,11 +14,7 @@ import { Loading } from "./src/components/Loading";
 
 import { CartContextProvider } from "./src/contexts/CartContext";
 
-const oneSignalAppId = process.env.ONE_SIGNAL_APP_ID
-  ? process.env.ONE_SIGNAL_APP_ID
-  : "config One Signal ID on .env file";
-
-OneSignal.setAppId(oneSignalAppId);
+OneSignal.setAppId("70b8b310-b082-49eb-9640-5b5c598b0587");
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
