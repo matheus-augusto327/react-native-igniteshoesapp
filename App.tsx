@@ -1,4 +1,5 @@
-import { StatusBar } from "react-native";
+import { useEffect } from "react";
+import { StatusBar, Platform } from "react-native";
 import OneSignal from "react-native-onesignal";
 import { NativeBaseProvider } from "native-base";
 import {
@@ -11,13 +12,39 @@ import { Routes } from "./src/routes";
 
 import { THEME } from "./src/theme";
 import { Loading } from "./src/components/Loading";
+import { tagUserInfoCreate } from "./src/notifications/notificationsTags";
 
 import { CartContextProvider } from "./src/contexts/CartContext";
 
-OneSignal.setAppId("70b8b310-b082-49eb-9640-5b5c598b0587");
+const oneSignalAppId =
+  Platform.OS === "ios"
+    ? "2b542c58-e2e9-48f1-8bff-004caefe40c4"
+    : "70b8b310-b082-49eb-9640-5b5c598b0587";
+OneSignal.setAppId(oneSignalAppId);
+
+OneSignal.promptForPushNotificationsWithUserResponse();
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
+
+  tagUserInfoCreate();
+
+  useEffect(() => {
+    const unsubscribe = OneSignal.setNotificationOpenedHandler((response) => {
+      const { actionId } = response.action as any;
+
+      switch (actionId) {
+        case "1":
+          return console.log("Ver todas");
+        case "2":
+          return console.log("Ver pedido");
+        default:
+          return console.log("Não foi clicado em botão de ação");
+      }
+    });
+
+    return () => unsubscribe;
+  }, []);
 
   return (
     <NativeBaseProvider theme={THEME}>
